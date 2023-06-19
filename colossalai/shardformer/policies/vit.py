@@ -2,6 +2,7 @@ rom typing import Dict, Union
 
 import torch.nn as nn
 
+<<<<<<< HEAD
 from colossalai.shardformer.layer import DropoutForReplicatedInput, FusedLayerNorm, Linear1D_Col, Linear1D_Row
 
 from .basepolicy import ModulePolicyDescription, Policy, SubModuleReplacementDescription
@@ -142,4 +143,11 @@ class ViTForMaskedImageModelingPolicy(ViTPolicy):
         super().__init__()
         
 
+=======
+from transformers.models.vit.modeling_vit import ViTModel
+
+from colossalai.shardformer.layer.layers import Linear1D_Col, Linear1D_Row, VocabParallelEmbedding1D
+
+from .basepolicy import ModulePolicyDescription, Policy, SubModuleReplacementDescription
+>>>>>>> first v of vit shardformer
 
