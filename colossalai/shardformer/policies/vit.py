@@ -39,70 +39,74 @@ class ViTPolicy(Policy):
                                             )
                                         ]),
             ViTLayer:
-                ModulePolicyDescription(attribute_replacement={
-                    "attention.attention.num_attention_heads":
-                        self.model.config.num_attention_heads // self.shard_config.tensor_parallel_size,
-                    "attention.attention.all_head_size":
-                        self.model.config.hidden_size // self.shard_config.tensor_parallel_size,
-                },
-                                        param_replacement=[],
-                                        sub_module_replacement=[
-                                            SubModuleReplacementDescription(
-                                                suffix="attention.attention.query",
-                                                target_module=Linear1D_Col,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="attention.attention.key",
-                                                target_module=Linear1D_Col,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="attention.attention.value",
-                                                target_module=Linear1D_Col,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="attention.attention.dropout",
-                                                target_module=DropoutForParallelInput,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="attention.output.dense",
-                                                target_module=Linear1D_Row,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="attention.output.dropout",
-                                                target_module=DropoutForParallelInput,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="intermediate.dense",
-                                                target_module=Linear1D_Col,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="output.dense",
-                                                target_module=Linear1D_Row,
-                                            ),
-                                            SubModuleReplacementDescription(
-                                                suffix="output.dropout",
-                                                target_module=DropoutForParallelInput,
-                                            ),
-                                        ]),
+                ModulePolicyDescription(
+                    attribute_replacement{
+                        "attention.attention.num_attention_heads":
+                            self.model.config.num_attention_heads//self.shard_config.tensor_parallel_size,
+                        "attention.attention.all_head_size":
+                            self.model.config.hidden_size//self.shard_config.tensor_parallel_size,
+                    },
+                    param_replacement=[],
+                    sub_module_replacement=[
+                        SubModuleReplacementDescription(
+                            suffix="attention.attention.query",
+                            target_module=Linear1D_Col,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="attention.attention.key",
+                            target_module=Linear1D_Col,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="attention.attention.value",
+                            target_module=Linear1D_Col,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="attention.attention.dropout",
+                            target_module=Dropout1D,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="attention.output.dense",
+                            target_module=Linear1D_Row,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="attention.output.dropout",
+                            target_module=Dropout1D,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="intermediate.dense",
+                            target_module=Linear1D_Col,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="output.dense",
+                            target_module=Linear1D_Row,
+                        ),
+                        SubModuleReplacementDescription(
+                            suffix="output.dropout",
+                            target_module=Dropout1D,
+                        ),
+                        # SubModuleReplacementDescription(
+                        #     suffix="layernorm_before",
+                        #     target_module=LayerNorm1D,
+                        # ),
+                        # SubModuleReplacementDescription(
+                        #     suffix="layernorm_after",
+                        #     target_module=LayerNorm1D,
+                        # ),
+                    ]
+                ),
+            # ViTModel:
+            #     ModulePolicyDescription(
+            #         attribute_replacement{},
+            #         param_replacement=[],
+            #         sub_module_replacement=[
+            #             SubModuleReplacementDescription(
+            #                 suffix="layernorm",
+            #                 target_module=LayerNorm1D,
+            #             )
+            #         ]
+            #     ),
         }
 
-        # optimization configuration
-        if self.shard_config.enable_fused_normalization:
-            base_policy[ViTAttention].sub_module_replacement.extend([
-                SubModuleReplacementDescription(
-                    suffix="layernorm_before",
-                    target_module=FusedLayerNorm,
-                ),
-                SubModuleReplacementDescription(
-                    suffix="layernorm_after",
-                    target_module=FusedLayerNorm,
-                )
-            ])
-            base_policy[ViTModel].sub_module_replacement.append(
-                SubModuleReplacementDescription(
-                    suffix="layernorm",
-                    target_module=FusedLayerNorm,
-                ))
 
         return base_policy
 
