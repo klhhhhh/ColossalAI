@@ -115,3 +115,27 @@ class ViTPolicy(Policy):
 
     def postprocess(self):
         return self.model
+
+class ViTForImageClassification(ViTPolicy):
+
+     def module_policy(self):
+        from transformers.model.vit.modelling_vit import ViTForImageClassification
+
+        policy = super().module_policy()
+
+        new_item = {
+            ViTForImageClassification:
+            ModulePolicyDescription(attribute_replacement={},
+                                    param_replacement=[],
+                                    sub_module_replacement=[
+                                        SubModuleReplacementDescription(suffix="classifier",
+                                                                        target_module=Linear1D_Col,
+                                                                        kwargs=dict(gather_output=True))
+                                    ])
+        }
+        policy.update(new_item)
+        return policy
+
+
+
+
