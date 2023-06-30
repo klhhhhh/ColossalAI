@@ -116,7 +116,7 @@ class ViTPolicy(Policy):
     def postprocess(self):
         return self.model
 
-class ViTForImageClassification(ViTPolicy):
+class ViTForImageClassificationPolicy(ViTPolicy):
 
      def module_policy(self):
         from transformers.model.vit.modelling_vit import ViTForImageClassification
@@ -136,6 +136,10 @@ class ViTForImageClassification(ViTPolicy):
         policy.update(new_item)
         return policy
 
+class ViTForMaskedImageModelingPolicy(ViTPolicy):
 
+    def __init__(self) -> None:
+        super().__init__()
+        
 
 
