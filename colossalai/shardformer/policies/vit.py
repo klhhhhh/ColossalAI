@@ -6,7 +6,7 @@ from colossalai.shardformer.layer import DropoutForReplicatedInput, FusedLayerNo
 
 from .basepolicy import ModulePolicyDescription, Policy, SubModuleReplacementDescription
 
-__all__ = ['ViTPolicy']
+__all__ = ['ViTPolicy', 'ViTForImageClassificationPolicy', 'ViTForMaskedImageModelingPolicy']
 
 
 class ViTPolicy(Policy):
