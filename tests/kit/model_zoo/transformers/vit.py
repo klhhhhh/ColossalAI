@@ -30,7 +30,7 @@ config = transformers.ViTConfig(num_hidden_layers=4,
 # transformers.ViTModel,
 # transformers.ViTForMaskedImageModeling,
 # transformers.ViTForImageClassification,
-
+print("==========================================")
 model_zoo.register(name = 'transformers_vit',
                     model_fn = lambda : transformers.ViTModel(config),
                     data_gen_fn = data_gen,
@@ -40,14 +40,14 @@ model_zoo.register(name = 'transformers_vit',
 
 model_zoo.register(name = 'transformers_vit_for_masked_image_modeling',
                     model_fn = lambda : transformers.ViTForMaskedImageModeling(config),
-                    data_gen_fn = ,
+                    data_gen_fn = data_gen,
                     output_transform_fn = output_transform_fn,
                     loss_fn = loss_fn,
                     model_attribute = ModelAttribute(has_control_flow=True))
 
 model_zoo.register(name = 'transformers_vit_for_image_classification',
                     model_fn = lambda : transfomers.ViTForImageClassification(config),
-                    data_gen_fn = ,
+                    data_gen_fn = data_gen,
                     output_transform_fn = output_transform_fn,
                     loss_fn = loss_fn,
                     model_attribute = ModelAttribute(has_control_flow=True))
